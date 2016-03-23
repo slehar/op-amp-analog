@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+OpAmpAnalog.py
+
 Created on Fri Feb 12 16:33:03 2016
 
 @author: slehar
@@ -37,12 +39,13 @@ ax = fig.add_axes([.1, .1, .8, .8])
 ax.set_xticks([])
 ax.set_yticks([])
 
+# Read background image
 img1 = mpimg.imread('OpAmpAnalog1.png')
 (ySize, xSize, zSize) = img1.shape
 aspect = float(ySize)/float(xSize)
 ax.imshow(img1, extent=[-1., 1., -aspect, aspect])
 
-
+# Define blue piston and red piston rod
 redbox  = mpatches.Rectangle((-.27, .047),rodLength,rodHeight, fc='r')
 bluebox = mpatches.Rectangle((.05, -.008), pistThickness, pistHeight, fc='b')
 ax.add_patch(redbox)
@@ -55,11 +58,8 @@ funcPointsY = [.1, .1, -.1, -.1]
 (sx, sy) = (1.05, .65)
 fPointsX = [(x+dx)*sx for x in funcPointsX]
 fPointsY = [(y+dy)*sy for y in funcPointsY]
-#funcLine = mlines.Line2D(funcPointsX, funcPointsY, color='r', lw=1)
 fLine    = mlines.Line2D(fPointsX,    fPointsY, visible = False,
                          color=(1,.5,0), lw=3)
-
-#ax.add_line(funcLine)
 ax.add_line(fLine)
 
 # Function Line Checkbox
@@ -79,6 +79,7 @@ def func(label):
     
 check.on_clicked(func)
 
+# Add inverting (minus) and non-inverting (plus) input sliders
 axSlMinus = fig.add_axes([.42, .075, .05, .2])
 axSlPlus  = fig.add_axes([.57, .075, .05, .2])
 axOutput  = fig.add_axes([.75, .61,  .05, .2])
@@ -117,6 +118,7 @@ vslMinus.valtext.set_position((0.5, -0.1))
 vslPlus.on_changed(updateSlPlus)
 vslMinus.on_changed(updateSlMinus)
 
+# Window function: linear within thresh, +/- 15 otherwise
 def winFunc(piston):
     if piston <= -winThresh:
         return -15
@@ -125,6 +127,7 @@ def winFunc(piston):
     else:
         return 15
 
+# The animation function (evaluated repeatedly and endlessly)
 def animate(num):
     global piston, dt
     
@@ -136,8 +139,7 @@ def animate(num):
         piston = 1
     elif piston < -1:
         piston = -1
-        
-        
+                
     output = winFunc(piston)
     outText.set_text('%4.2f'%output)   
     if output > 0:
@@ -151,7 +153,8 @@ def animate(num):
     bluePos = redPos + .27
     bluebox.set_x(bluePos)        
     #print 'Piston: %4.2f output %4.2f '%(piston, output)
-    
+
+# Matplotlib animation funcion calls animate()    
 anim = animation.FuncAnimation(fig, animate, 
                                repeat=True,
                                interval=0)

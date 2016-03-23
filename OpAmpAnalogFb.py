@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """
+OpAmpAnalogFb.py
+
 Created on Fri Feb 12 16:33:03 2016
 
 @author: slehar
@@ -27,11 +29,10 @@ winThresh = .1
 dt = .08
 offset = 0.045 # Difference between center of fig and center of piston
 
-
 # Open figure and set axes 1 for drawing Artists
 plt.close('all')
 fig = plt.figure(figsize=(10,10))
-fig.canvas.set_window_title('Op-Amp Hydraulic Analogy')
+fig.canvas.set_window_title('Op-Amp With Feedback Hydraulic Analogy')
 fig.text(.3, .95, 'Op-Amp With Feedback', size=24)
 fig.text(.35, .9, 'Hydraulic Analogy', size=24)
 ax = fig.add_axes([.1, .1, .8, .8])
@@ -45,6 +46,7 @@ ax.imshow(img2, extent=[-1., 1., -aspect, aspect])
 whitebox = mpatches.Rectangle((-.3, -.7), .75, .15, fc='w', ec='w')
 ax.add_patch(whitebox)
 
+# Define blue piston and red piston rod
 redbox  = mpatches.Rectangle((-.22, -.105),rodLength,rodHeight, fc='r')
 bluebox = mpatches.Rectangle((.05, -.16), pistThickness, pistHeight, fc='b')
 ax.add_patch(redbox)
@@ -57,10 +59,8 @@ dx, dy = .05, -.1485
 sx, sy = 1.05, 0.65
 fPointsX = [(x+dx)*sx for x in funcPointsX]
 fPointsY = [(y+dy)*sy for y in funcPointsY]
-#funcLine = mlines.Line2D(funcPointsX, funcPointsY, color='r', lw=1)
 fLine    = mlines.Line2D(fPointsX,    fPointsY,    color=(1,.5,0),
                          visible=False, lw=3)
-#ax.add_line(funcLine)
 ax.add_line(fLine)
 
 # Function Line Checkbox
