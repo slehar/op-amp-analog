@@ -9,6 +9,7 @@ Created on Fri Feb 12 16:33:03 2016
 #%%
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from matplotlib.widgets import CheckButtons
 import matplotlib.lines as mlines
 import matplotlib.image as mpimg
 from matplotlib import animation
@@ -55,8 +56,8 @@ ax.add_patch(bluebox)
 
 # Add Function Line
 funcPointsX = [-.2, -.02, .02, .2]
-funcPointsY = [.1, .1, -.1, -.1]
-dx, dy = .05, -.1485
+funcPointsY = [ .1,  .1, -.1, -.1]
+dx, dy =  .05, -.1485
 sx, sy = 1.05, 0.65
 fPointsX = [(x+dx)*sx for x in funcPointsX]
 fPointsY = [(y+dy)*sy for y in funcPointsY]
@@ -64,7 +65,16 @@ fLine    = mlines.Line2D(fPointsX,    fPointsY,    color=(1,.5,0),
                          visible=False, lw=3)
 ax.add_line(fLine)
 
-# Function Line Checkbox
+# Add load valve lines
+#loadValve1 = mpatches.Arc((-.088,.578), .08, .08, theta1=0., theta2=180., fc='r')
+loadValveCirc = mpatches.Ellipse((-.088,.577), .08, .08, fc='k')
+ax.add_patch(loadValveCirc)
+loadValveRect1 = mpatches.Rectangle((-.13,.57), .08, .015, ec=None, fc='w', visible=False)
+loadValveRect2 = mpatches.Rectangle((-.08,.536), .08, .015, ec=None, fc='w', angle=90.)
+ax.add_patch(loadValveRect1)
+ax.add_patch(loadValveRect2)
+
+# Checkboxes
 rax = plt.axes([0.05, 0.05, 0.2, 0.3])
 check = CheckButtons(rax, ['Function Line', 'Pause', 'Load'], [False, False, False])
 
@@ -82,6 +92,12 @@ def func(label):
     elif label == 'Load':
         if check.lines[2][0].get_visible():
             print 'Load'
+            loadValveRect1.set_visible(True)
+            loadValveRect2.set_visible(False)
+        else:
+            print 'off'
+            loadValveRect1.set_visible(False)
+            loadValveRect2.set_visible(True)
     plt.draw()
 #%%    
 check.on_clicked(func)

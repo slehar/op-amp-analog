@@ -9,6 +9,8 @@ Created on Fri Feb 12 16:33:03 2016
 #%%
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from matplotlib.widgets import CheckButtons
+import matplotlib.lines as mlines
 import matplotlib.image as mpimg
 from matplotlib import animation
 from vertslider import VertSlider
