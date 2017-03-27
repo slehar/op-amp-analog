@@ -49,15 +49,15 @@ whitebox = mpatches.Rectangle((-.3, -.7), .75, .15, fc='w', ec='w')
 ax.add_patch(whitebox)
 
 # Define blue piston and red piston rod
-redbox  = mpatches.Rectangle((-.22, -.105),rodLength,rodHeight, fc='r')
-bluebox = mpatches.Rectangle((.05, -.16), pistThickness, pistHeight, fc='b')
+redbox  = mpatches.Rectangle((-.22, -.100),rodLength,rodHeight, fc='r')
+bluebox = mpatches.Rectangle((.05, -.15), pistThickness, pistHeight, fc='b')
 ax.add_patch(redbox)
 ax.add_patch(bluebox)
 
 # Add Function Line
 funcPointsX = [-.2, -.02, .02, .2]
 funcPointsY = [ .1,  .1, -.1, -.1]
-dx, dy =  .05, -.1485
+dx, dy =  .05, -.14
 sx, sy = 1.05, 0.65
 fPointsX = [(x+dx)*sx for x in funcPointsX]
 fPointsY = [(y+dy)*sy for y in funcPointsY]
@@ -73,6 +73,7 @@ loadValveRect1 = mpatches.Rectangle((-.13,.57), .08, .015, ec=None, fc='w', visi
 loadValveRect2 = mpatches.Rectangle((-.08,.536), .08, .015, ec=None, fc='w', angle=90.)
 ax.add_patch(loadValveRect1)
 ax.add_patch(loadValveRect2)
+valveOn = False
 
 # Checkboxes
 rax = plt.axes([0.05, 0.05, 0.2, 0.3])
@@ -81,7 +82,7 @@ check = CheckButtons(rax, ['Function Line', 'Pause', 'Load'], [False, False, Fal
 
 #%%
 def func(label):
-    global dt
+    global dt, valveOn
     if   label == 'Function Line':
         fLine.set_visible(not fLine.get_visible())
     elif label == 'Pause':
@@ -91,13 +92,15 @@ def func(label):
             dt = 0.1
     elif label == 'Load':
         if check.lines[2][0].get_visible():
-            print 'Load'
             loadValveRect1.set_visible(True)
             loadValveRect2.set_visible(False)
+            loadValveCirc.set_facecolor('r')
+            valveOn = True
         else:
-            print 'off'
             loadValveRect1.set_visible(False)
             loadValveRect2.set_visible(True)
+            loadValveCirc.set_facecolor('k')
+            valveOn = False
     plt.draw()
 #%%    
 check.on_clicked(func)
@@ -158,10 +161,14 @@ def winFunc(piston):
 def animate(num):
     global piston, output, feedback
 
+    if valveOn:
+        load = .1
+    else:
+        load = 0.
     if check.lines[1][0].get_visible(): # If paused
         piston = valPlus - valMinus
     else:
-        piston += dt * (valPlus - valMinus) - feedback
+        piston += dt * (valPlus - valMinus + load) - feedback
     if   piston > 1.:
         piston = 1
     elif piston < -1:
