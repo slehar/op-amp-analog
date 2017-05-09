@@ -67,7 +67,7 @@ ax.add_line(fLine)
 
 # Add load valve lines
 #loadValve1 = mpatches.Arc((-.088,.578), .08, .08, theta1=0., theta2=180., fc='r')
-loadValveCirc = mpatches.Ellipse((-.088,.577), .08, .08, fc='k')
+loadValveCirc = mpatches.Ellipse((-.088,.577), .08, .08, fc='r')
 ax.add_patch(loadValveCirc)
 loadValveRect1 = mpatches.Rectangle((-.13,.57), .08, .015, ec=None, fc='w', visible=False)
 loadValveRect2 = mpatches.Rectangle((-.08,.536), .08, .015, ec=None, fc='w', angle=90.)
@@ -94,12 +94,12 @@ def func(label):
         if check.lines[2][0].get_visible():
             loadValveRect1.set_visible(True)
             loadValveRect2.set_visible(False)
-            loadValveCirc.set_facecolor('r')
+            loadValveCirc.set_facecolor('g')
             valveOn = True
         else:
             loadValveRect1.set_visible(False)
             loadValveRect2.set_visible(True)
-            loadValveCirc.set_facecolor('k')
+            loadValveCirc.set_facecolor('r')
             valveOn = False
     plt.draw()
 #%%    
@@ -162,13 +162,13 @@ def animate(num):
     global piston, output, feedback
 
     if valveOn:
-        load = .1
+        load = .2
     else:
         load = 0.
     if check.lines[1][0].get_visible(): # If paused
         piston = valPlus - valMinus
-    else:
-        piston += dt * (valPlus - valMinus + load) - feedback
+    else: # otherwise differential equation
+        piston += dt * (valPlus - (valMinus - load)) - feedback
     if   piston > 1.:
         piston = 1
     elif piston < -1:
