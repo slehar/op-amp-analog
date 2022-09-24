@@ -154,7 +154,7 @@ class VertSlider(AxesWidget):
         self.val = val
         if not self.eventson:
             return
-        for cid, func in self.observers.iteritems():
+        for cid, func in self.observers.items():
             func(val)
 
     def on_changed(self, func):
